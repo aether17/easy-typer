@@ -140,7 +140,13 @@ const mutations: MutationTree<SettingState> = {
 const actions: ActionTree<SettingState, QuickTypingState> = {
   load ({ commit }, setting) {
     if (setting) {
-      commit('update', setting)
+      // Apply the new default once for existing installations, then preserve
+      // subsequent explicit choices made with the clipboard switch.
+      const migrateClipboard = !setting.clipboardPreferenceVersion
+      commit('update', migrateClipboard
+        ? { ...setting, offClipboard: true, clipboardPreferenceVersion: 1 }
+        : setting)
+      if (migrateClipboard) commit('saveToDB')
       commit('loaded')
     }
   }

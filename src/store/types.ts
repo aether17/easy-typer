@@ -638,9 +638,13 @@ export class SettingState {
    */
   darkMode = false
   /**
-   * 关闭剪切板
+   * 关闭成绩自动复制
    */
-  offClipboard = false
+  offClipboard = true
+  /**
+   * 已应用默认不自动复制的偏好版本
+   */
+  clipboardPreferenceVersion = 1
   /**
    * 是否展示侧边栏
    */

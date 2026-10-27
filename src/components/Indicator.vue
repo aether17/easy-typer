@@ -42,11 +42,11 @@
         <div class="indicator-action">
           <el-button size="mini" @click="handleRandomReading" type="success" plain>随机文章</el-button>
           <el-button size="mini" @click="handleTodayReading" type="success" plain>每日一文</el-button>
-          <template v-for="type in wikiTypeMap">
+          <template v-for="type in onlineWikiTypes">
             <el-button :key="type.title" size="mini" @click="handleWikis(type.type)" :type="type.buttonStyle" plain>{{type.title}}</el-button>
           </template>
-          <el-button size="mini" @click="handleTodayHistory('simple')" type="primary" plain>历史上的今天</el-button>
-          <el-button size="mini" @click="handleTodayHistory('detail')" type="primary" plain>详细</el-button>
+          <el-button v-if="!selfHosted" size="mini" @click="handleTodayHistory('simple')" type="primary" plain>历史上的今天</el-button>
+          <el-button v-if="!selfHosted" size="mini" @click="handleTodayHistory('detail')" type="primary" plain>详细</el-button>
           <div style="margin-top: 12px;">
           <el-button @click="handleReadingClick" size="mini" type="text">每日一读，沉浸经典</el-button>
         </div>
@@ -129,7 +129,7 @@
           </span>
         </div>
         <div class="key-value">
-          <span>关闭剪切板访问</span>
+          <span>关闭成绩自动复制</span>
           <span>
             <el-switch v-model="tempOffClipboard" @change="toggleClipboard(tempOffClipboard)"/>
           </span>
@@ -143,10 +143,8 @@
       </el-card>
       <el-card class="contribute" shadow="never">
         <p><a class="e-github-link" href="https://github.com/owenyang0/easy-typer" target="_blank">喜欢！点个赞</a></p>
-        <p><i class="el-icon-s-promotion"/> <span id="busuanzi_container_site_pv">访问量 <span id="busuanzi_value_site_pv">1</span>次</span></p>
         <p><i class="el-icon-info"/> <a href="/changelog">{{ versionText }}</a></p>
         <p><i class="el-icon-user-solid"/> <a href="https://blog.owenyang.top" target="_blank">关于木易某某</a></p>
-        <p><i class="el-icon-location"/> <a href="https://beian.miit.gov.cn" target="_blank" class="slide">蜀ICP备2023002101号-1</a></p>
       </el-card>
       <el-drawer
         :title="drawer.title"
@@ -167,6 +165,7 @@ import { Component, Vue, Watch } from 'vue-property-decorator'
 import { Getter, namespace, State } from 'vuex-class'
 import { KataArticle } from '@/store/kata'
 import { wikiTypeMap, wikiTypes } from '@/api/constant'
+import { selfHosted } from '@/api/localTexts'
 
 const racing = namespace('racing')
 const setting = namespace('setting')
@@ -176,6 +175,8 @@ const kata = namespace('kata')
 
 @Component
 export default class Indicator extends Vue {
+  private selfHosted = selfHosted
+  private onlineWikiTypes = selfHosted ? {} : wikiTypeMap
   @Getter('version')
   private version!: string
 

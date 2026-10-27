@@ -1,6 +1,16 @@
 <template>
   <div>
-    <el-table border :data="achievements.slice(0, 10)" stripe="stripe" style="width:100%;" class="achievements-table" :cell-class-name="tableCellClassName">
+    <div v-if="achievements.length" ref="recent" class="mobile-achievements">
+      <table aria-label="最近三次成绩，最新在前">
+        <thead><tr><th scope="col">编号</th><th scope="col">速度（字/分）</th><th scope="col">准确率</th></tr></thead>
+        <tbody>
+          <tr v-for="(row, index) in achievements.slice(0, 3)" :key="index">
+            <td>{{ row.identity }}</td><td>{{ row.typeSpeed }}</td><td>{{ row.accuracy }}%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <el-table border :data="achievements.slice(0, 10)" stripe="stripe" style="width:100%;" class="achievements-table desktop-achievements" :cell-class-name="tableCellClassName">
       <el-table-column prop="title" type="expand" label="">
         <template slot-scope="$props">
           <el-button @click="handleCopy($props.row)" type="text" size="medium">复制</el-button> {{ generateRecord($props.row) }}
@@ -24,7 +34,7 @@
       <el-table-column prop="title" label="标题" min-width="120" show-overflow-tooltip />
       <el-table-column prop="finishedTime" label="结束时间" :formatter="timeFormatter" width="166"/>
     </el-table>
-    <div class="pagination-wrapper">
+    <div class="pagination-wrapper desktop-achievements">
       <el-pagination
         background
         :pager-count="5"
@@ -38,7 +48,7 @@
 
 <script lang="ts">
 import { Achievement, RacingState } from '@/store/types'
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 import { Mutation, State } from 'vuex-class'
 import Clipboard from '@/store/util/Clipboard'
 import db from '../store/util/Database'
@@ -57,6 +67,14 @@ export default class Achievements extends Vue {
 
   @Mutation('updateAchievements')
   private updateAchievements!: Function
+
+  @Watch('achievements')
+  showLatest () {
+    this.$nextTick(() => {
+      const recent = this.$refs.recent as HTMLElement | undefined
+      if (recent) recent.scrollTop = 0
+    })
+  }
 
   titleFormatter (row: Achievement, column: number, value: string) {
     return (value || '未知').slice(0, 16)

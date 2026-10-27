@@ -100,15 +100,6 @@ module.exports = {
     ])
   },
   productionSourceMap: false,
-  pluginOptions: {
-    prerenderSpa: {
-      registry: undefined,
-      renderRoutes: routes,
-      useRenderEvent: true,
-      headless: true,
-      onlyProduction: true
-    }
-  },
   devServer: {
     proxy: {
       '^/api': {

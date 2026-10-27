@@ -64,6 +64,19 @@ export default class Article extends Vue {
   @setting.State('hintOptions')
   private hintOptions!: Array<string>
 
+  private boardObserver: ResizeObserver | null = null
+
+  mounted () {
+    if (typeof ResizeObserver !== 'undefined') {
+      this.boardObserver = new ResizeObserver(() => this.autoScroll(this.progress))
+      this.boardObserver.observe((this.$refs.board as Vue).$el)
+    }
+  }
+
+  beforeDestroy () {
+    if (this.boardObserver) this.boardObserver.disconnect()
+  }
+
   get articleStyle (): Array<string> {
     let mode = 'inline'
     if (this.hint && this.shortest && (this.codeHint || this.selectHint || this.autoSelectHint)) {
@@ -125,29 +138,32 @@ export default class Article extends Vue {
    */
   @Watch('progress')
   autoScroll (progress: number) {
-    const el = (this.$refs.board as Vue).$el
-    const { clientHeight, scrollHeight } = el
-    const scrollDistance = scrollHeight - clientHeight
-    if (scrollDistance <= 0) {
-      return
-    }
-
-    if (progress === 0) {
-      el.scrollTop = 0
-      return
-    }
-
-    const suffixOffset = this.hint ? 2 : 1
-    const baseOffset = (parseFloat(this.fontSize) + suffixOffset) * 12
-
-    const fixed = this.hint ? Math.max(0, baseOffset * (this.articleRows - 1) - 0.5 * baseOffset) : baseOffset * (this.articleRows - 1)
-
-    const pending = document.querySelector('.code1,.code2,.code3,.code4,.pending') as HTMLElement
-    if (pending) {
-      el.scrollTop = Math.max(0, pending.offsetTop - fixed)
-    } else {
-      el.scrollTop = Math.min(progress * scrollDistance, scrollDistance)
-    }
+    // Wait for the current character's DOM to update. Use the actual panel
+    // height: configured articleRows no longer describes it above a keyboard.
+    this.$nextTick(() => {
+      const board = this.$refs.board as Vue | undefined
+      if (!board) return
+      const el = board.$el as HTMLElement
+      if (progress === 0) {
+        el.scrollTop = 0
+        return
+      }
+      const pending = el.querySelector('.pending > span,.code1 > span,.code2 > span,.code3 > span,.code4 > span')
+      const text = pending?.firstChild
+      if (!text || !text.textContent) return
+      const range = document.createRange()
+      range.setStart(text, 0)
+      range.setEnd(text, 1)
+      const charRect = range.getBoundingClientRect()
+      const boardRect = el.getBoundingClientRect()
+      const lineHeight = Math.max(charRect.height, 24)
+      const bottom = Math.max(lineHeight, el.clientHeight - lineHeight)
+      if (charRect.bottom > boardRect.top + bottom) {
+        el.scrollTop += charRect.bottom - boardRect.top - bottom
+      } else if (charRect.top < boardRect.top) {
+        el.scrollTop += charRect.top - boardRect.top
+      }
+    })
   }
 
   check (index: number, input: string, target: string, words: Array<Word>): void {

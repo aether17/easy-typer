@@ -3,6 +3,7 @@ import axios, { AxiosResponse } from 'axios'
 import { LoginState } from '@/store/types'
 import { HistoriesResponse, KataOption, KataOptions, NewsResponse } from '@/models/articleModels'
 import { wikiTypeMap, wikiTypes } from './constant'
+import { selfHosted, localArticle, localKataList, localKataOption } from './localTexts'
 
 const HASH_KEY = '3198f2e6892d5bdd0630505e20acfc849a12e03c5a1da4c5c41a180c44c67eeb85ef0bc6992d9b0c3926da22ebaa55346bcd76d8556321e044530eff3d868e2636514072'
 
@@ -161,10 +162,12 @@ const baseRequest = (api: string) => {
 }
 
 const getRandomArticle = (): Promise<NewsResponse> => {
+  if (selfHosted) return localArticle()
   return axiosInstance.get('/api/r/articles/random')
 }
 
 const getTodayArticle = (): Promise<NewsResponse> => {
+  if (selfHosted) return localArticle(true)
   return axiosInstance.get('/api/r/articles/today')
 }
 
@@ -177,10 +180,12 @@ const getTodayHistories = (): Promise<HistoriesResponse[]> => {
 }
 
 const getKataList = (): Promise<KataOptions[]> => {
+  if (selfHosted) return localKataList()
   return axiosInstance.get('/api/r/kata/list')
 }
 
 const getKataOptionById = (id: number): Promise<KataOption> => {
+  if (selfHosted) return localKataOption(id)
   return axiosInstance.get(`/api/r/kata/option/${id}`)
 }
 

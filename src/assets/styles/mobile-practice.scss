@@ -1,0 +1,190 @@
+.mobile-practice-button {
+  display: none;
+}
+
+.mobile-achievements {
+  display: none;
+  max-height: 80px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  overflow-anchor: none;
+
+  table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    color: var(--normal-color);
+  }
+  th, td {
+    height: 20px;
+    line-height: 20px;
+    padding: 0 4px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  th {
+    position: sticky;
+    top: 0;
+    background: var(--background-color);
+    font-weight: normal;
+    color: var(--secondary-color);
+  }
+  tbody tr:first-child { font-weight: 600; }
+}
+
+.dark .mobile-achievements table { color: var(--dark-pending); }
+
+@mixin mobile-achievements {
+  .mobile-achievements { display: block; }
+  .desktop-achievements { display: none; }
+  .achievements-row {
+    flex: 0 0 auto;
+    margin-top: 4px !important;
+  }
+}
+
+@media (max-width: 680px) {
+  @include mobile-achievements;
+  .mobile-practice-button {
+    display: inline-block;
+  }
+  #article-main .article {
+    max-height: 42vh;
+  }
+}
+
+// visualViewport covers both browsers that resize the layout for the keyboard
+// and browsers that only shrink/pan the visible part of that layout.
+html[data-mobile-practice],
+html[data-mobile-practice] body {
+  overflow: hidden;
+}
+
+html[data-mobile-practice] {
+  @include mobile-achievements;
+  #home {
+    position: fixed;
+    z-index: 100;
+    top: var(--practice-viewport-top, 0px);
+    left: 0;
+    width: 100%;
+    height: var(--practice-viewport-height, 100%);
+    margin: 0;
+    background: var(--background-color);
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  #home > .el-container,
+  #home-main {
+    height: 100%;
+    min-height: 0;
+  }
+
+  #home-main {
+    display: flex;
+    flex-direction: column;
+    padding: 6px;
+    overflow: hidden;
+    --font-size: clamp(20px, 5.5vw, 32px) !important;
+  }
+
+  .indicator-container {
+    display: none !important;
+  }
+
+  .mobile-practice-button {
+    display: inline-block;
+  }
+
+  .toolbar-wrapper {
+    flex: 0 0 auto;
+    text-align: left;
+
+    .el-button-group {
+      display: flex;
+      align-items: center;
+      overflow-x: auto;
+      max-width: 100%;
+      white-space: nowrap;
+      > * { flex-shrink: 0; }
+    }
+    .indicator-real { width: auto !important; }
+    .el-divider { margin-bottom: 4px; }
+  }
+
+  .practice-panel {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0;
+    min-height: 0;
+  }
+
+  .reference-row {
+    flex: 1 1 0;
+    min-height: 0;
+    > .el-col { height: 100%; }
+  }
+
+  #article-main {
+    // Increase the reference independently of the editor's font size.
+    --font-size: clamp(28px, 7.7vw, 34px);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+
+    .article {
+      flex: 1 1 0;
+      height: auto;
+      min-height: 0;
+      max-height: none;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .article-info {
+      flex: 0 0 1px;
+      margin: 14px 0;
+      .el-divider__text {
+        max-width: calc(100% - 30px);
+        padding: 0 4px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 11px;
+      }
+    }
+  }
+
+  .input-row {
+    flex: 0 0 auto;
+  }
+
+  #racing-textarea {
+    height: 64px;
+    max-height: calc(var(--practice-viewport-height) * 0.25);
+    min-height: 32px !important;
+    padding: 4px 8px;
+    resize: none;
+    transition: none;
+    overscroll-behavior: contain;
+  }
+
+}
+
+// Very short spaces (e.g. landscape keyboards): keep one history row visible,
+// with the other two available by scrolling inside the same compact table.
+html[data-mobile-practice-compact] {
+  .mobile-achievements { max-height: 40px; }
+  .toolbar-wrapper .el-divider { margin: 2px 0; }
+  #article-main .article-info { display: none; }
+  #racing-textarea {
+    height: 36px;
+    font-size: 24px;
+    line-height: 28px;
+  }
+}

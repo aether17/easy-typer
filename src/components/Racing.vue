@@ -19,7 +19,8 @@
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 import Clipboard from '@/store/util/Clipboard'
-import { fixMobileScrollIssue } from '@/store/util/common'
+import { isMobile } from '@/store/util/common'
+import { bindMobileViewport } from '@/store/util/mobileViewport'
 import { ElNotificationOptions } from 'element-ui/types/notification'
 import dayjs from 'dayjs'
 
@@ -76,6 +77,8 @@ export default class Racing extends Vue {
    * 最后一次键入的文字
    */
   private last = ''
+
+  private unbindViewport: (() => void) | null = null
 
   get isDisabled (): boolean {
     return this.status !== 'typing' && this.status !== 'init'
@@ -192,7 +195,12 @@ export default class Racing extends Vue {
   }
 
   mounted () {
-    fixMobileScrollIssue()
+    const input = document.getElementById('racing-textarea') as HTMLTextAreaElement
+    if (isMobile() && input) this.unbindViewport = bindMobileViewport(input)
+  }
+
+  beforeDestroy () {
+    if (this.unbindViewport) this.unbindViewport()
   }
 
   /**

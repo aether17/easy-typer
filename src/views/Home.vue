@@ -24,6 +24,7 @@
                 <span class="val"><el-button type="text" size="mini">23 </el-button></span>
               </div> -->
               <el-button-group>
+                <el-button class="mobile-practice-button" size="mini" @click="$router.push('/kata')">选文</el-button>
                 <el-tooltip :content="indicatorTooltipText" placement="top">
                   <el-button size="mini" icon="el-icon-caret-right" @click="toggleSidebar" class="indicator-real" style="width: 220px;">速度<span class="val">{{ typeSpeed }}</span> | 击键<span class="val">{{ hitSpeed }}</span> | 码长<span class="val">{{ codeLength }}</span></el-button>
                 </el-tooltip>
@@ -66,10 +67,10 @@
                     <el-dropdown-item icon="el-icon-right" command="next">下一段(Ctrl+P)</el-dropdown-item>
                     <el-dropdown-item icon="el-icon-medal" command="dailyArticle" divided>每日一文</el-dropdown-item>
                     <el-dropdown-item icon="el-icon-tickets" command="randomArticle">随机文章</el-dropdown-item>
-                    <template v-for="type in wikiTypeMap">
+                    <template v-for="type in onlineWikiTypes">
                       <el-dropdown-item :key="type.title" icon="el-icon-news" :command="`wikis:${type.type}`">{{type.title}}</el-dropdown-item>
                     </template>
-                    <el-dropdown-item icon="el-icon-thumb" command="todayHistories">历史上的今天</el-dropdown-item>
+                    <el-dropdown-item v-if="!selfHosted" icon="el-icon-thumb" command="todayHistories">历史上的今天</el-dropdown-item>
                     <el-dropdown-item icon="el-icon-warning-outline" command="singleFront500" divided disabled>与发文共享指标</el-dropdown-item>
                     <el-dropdown-item icon="el-icon-trophy" command="singleFront500">前500 10字[乱]</el-dropdown-item>
                     <el-dropdown-item icon="el-icon-trophy" command="singleMiddle500">中500 10字[乱]</el-dropdown-item>
@@ -159,18 +160,18 @@
           </el-row>
           <el-divider class="mini"/>
         </div>
-        <div>
-          <el-row>
+        <div class="practice-panel">
+          <el-row class="reference-row">
             <el-col :span="24">
               <Article ref="article" />
             </el-col>
           </el-row>
-          <el-row>
+          <el-row class="input-row">
             <el-col :span="24">
               <Racing ref="racing" />
             </el-col>
           </el-row>
-          <el-row style="margin-top: 20px;">
+          <el-row class="achievements-row" style="margin-top: 20px;">
             <el-col :span="24">
               <Achievements />
             </el-col>
@@ -250,6 +251,7 @@ import { criteriaActionText, isMobile } from '@/store/util/common'
 import { kataHistory, KataHistoryState } from '@/store/util/KataHistory'
 import { KataArticle } from '@/store/kata'
 import { wikiTypeMap } from '@/api/constant'
+import { selfHosted } from '@/api/localTexts'
 
 const article = namespace('article')
 const racing = namespace('racing')
@@ -266,6 +268,8 @@ const kata = namespace('kata')
   }
 })
 export default class Home extends Vue {
+  private selfHosted = selfHosted
+  private onlineWikiTypes = selfHosted ? {} : wikiTypeMap
   @Action('setAppVersion')
   private setAppVersion!: Function
 

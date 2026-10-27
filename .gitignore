@@ -26,3 +26,6 @@ pnpm-debug.log*
 
 # 自动编译
 /docs
+/public/practice-texts/
+/public/LICENSE.txt
+/test-results/
