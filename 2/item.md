@@ -1,6 +1,6 @@
 ---
 type: story
-status: todo
+status: done
 labels: []
 creator: aether
 created: 2026-10-26T21:34:01-07:00
