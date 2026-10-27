@@ -33,6 +33,8 @@
     font-weight: normal;
     color: var(--secondary-color);
   }
+  th:first-child { width: 12%; }
+  th:nth-child(2) { width: 30%; }
   tbody tr:first-child { font-weight: 600; }
 }
 

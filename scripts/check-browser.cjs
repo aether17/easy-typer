@@ -181,9 +181,9 @@ async function main () {
     const recentRows = await page.locator('.mobile-achievements tbody tr').allTextContents()
     assert.equal(recentRows.length, 3)
     const expectedRows = await page.evaluate(() => document.getElementById('app').__vue__.$store.state.achievements.slice(0, 3)
-      .map(row => `${row.identity}${row.typeSpeed}${row.accuracy}%`))
+      .map(row => `${row.identity}${row.typeSpeed}${row.hitSpeed}${row.codeLength}${row.accuracy}%`))
     assert.deepEqual(recentRows.map(row => row.trim()), expectedRows)
-    assert.deepEqual(await page.locator('.mobile-achievements th').allTextContents(), ['编号', '速度（字/分）', '准确率'])
+    assert.deepEqual(await page.locator('.mobile-achievements th').allTextContents(), ['编号', '速度（字/分）', '击键', '码长', '准确率'])
     await load(front.content)
     await checkMobileBounds(true)
     // Scrolling older attempts must keep the keyboard/editor focused.

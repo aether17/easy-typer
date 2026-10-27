@@ -53,7 +53,7 @@
       </el-form>
       <el-divider />
       <el-form :inline="true" class="form-content">
-        <el-form-item label="开启指标">
+        <el-form-item label="开启指标" class="criteria-toggle">
           <el-switch :value="criteriaOpen" @change="handleCriteriaOpenChange"></el-switch>
         </el-form-item>
         <el-form-item label="击键≥">
@@ -63,11 +63,10 @@
             :min="0"
             :max="30"
             :step="0.5"
-            :disabled="isHitSpeedCriteriaDisabled"
+            :disabled="isCriteriaDisabled"
             @change="handleHitSpeedChange"
             class="form-field"
           ></el-input-number>
-          <el-tag v-if="isMobile" type="warning" size="mini" style="margin-left: 10px;">移动端无效</el-tag>
         </el-form-item>
         <el-form-item label="速度≥">
           <el-input-number
@@ -201,14 +200,6 @@ export default class Home extends Vue {
 
   get isCriteriaDisabled (): boolean {
     return !this.criteriaOpen
-  }
-
-  get isHitSpeedCriteriaDisabled (): boolean {
-    return this.isCriteriaDisabled || isMobile()
-  }
-
-  get isMobile (): boolean {
-    return isMobile()
   }
 
   get hasArticleText (): boolean {
@@ -403,6 +394,11 @@ export default class Home extends Vue {
 <style lang="scss">
 .form-content {
   margin-top: 20px;
+}
+
+.page-kata .el-form--inline .criteria-toggle {
+  display: block;
+  margin-right: 0;
 }
 
 iframe::before {

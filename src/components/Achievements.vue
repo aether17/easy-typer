@@ -2,10 +2,10 @@
   <div>
     <div v-if="achievements.length" ref="recent" class="mobile-achievements">
       <table aria-label="最近三次成绩，最新在前">
-        <thead><tr><th scope="col">编号</th><th scope="col">速度（字/分）</th><th scope="col">准确率</th></tr></thead>
+        <thead><tr><th scope="col">编号</th><th scope="col">速度（字/分）</th><th scope="col" title="击键（次/秒）">击键</th><th scope="col">码长</th><th scope="col">准确率</th></tr></thead>
         <tbody>
           <tr v-for="(row, index) in achievements.slice(0, 3)" :key="index">
-            <td>{{ row.identity }}</td><td>{{ row.typeSpeed }}</td><td>{{ row.accuracy }}%</td>
+            <td>{{ row.identity }}</td><td>{{ row.typeSpeed }}</td><td>{{ row.hitSpeed }}</td><td>{{ row.codeLength }}</td><td>{{ row.accuracy }}%</td>
           </tr>
         </tbody>
       </table>
