@@ -4,6 +4,8 @@ prefix = "TYPE"
 secret_files = []
 # Common labels, suggested by the web UI.
 labels = []
+relay = "https://aunn.mashiro.cafe"
+relay_project = "oyUCATPsyiUljYm9nGAm8Q"
 
 # Statuses of items, in the order of the board columns. New items get the first one.
 # require_note: changing an item to this status needs a status note.
