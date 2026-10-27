@@ -1,0 +1,38 @@
+prefix = "TYPE"
+# Paths of files that hold secrets, relative to the repository root.
+# Their values are replaced when chats are exported.
+secret_files = []
+# Common labels, suggested by the web UI.
+labels = []
+
+# Statuses of items, in the order of the board columns. New items get the first one.
+# require_note: changing an item to this status needs a status note.
+[[statuses]]
+value = "todo"
+name = "To do"
+color = "#6b7280"
+require_note = false
+
+[[statuses]]
+value = "doing"
+name = "In progress"
+color = "#2563eb"
+require_note = false
+
+[[statuses]]
+value = "paused"
+name = "Paused"
+color = "#d97706"
+require_note = true
+
+[[statuses]]
+value = "done"
+name = "Done"
+color = "#16a34a"
+require_note = false
+
+[[statuses]]
+value = "dropped"
+name = "Dropped"
+color = "#a8a29e"
+require_note = false
