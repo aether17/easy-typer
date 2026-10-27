@@ -4,6 +4,7 @@ status: todo
 labels: []
 creator: aether
 created: 2026-10-26T19:07:52-07:00
+extra_commits: [7f25d13e4890ca361fa90a2de15a8f69761c7b2f]
 ---
 # 安卓移动端跟打适配与静态 VPS 部署
 
